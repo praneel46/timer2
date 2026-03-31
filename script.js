@@ -6,13 +6,16 @@ const totalSeconds = 120; // 🔥 test (change to 1200 later)
 let particleSpeed = 1;
 let particleColor = "orange";
 
-let countdownSpoken = new Set(); // prevent repeat voice
+let speaking = false;
 
+/* START */
 function startApp() {
   document.getElementById("startScreen").classList.add("hidden");
   document.getElementById("timerScreen").classList.remove("hidden");
 
   enterFullscreen();
+  speechSynthesis.cancel(); // 🔥 clear any previous voice
+
   startParticles();
   startTimer();
 }
@@ -22,20 +25,26 @@ function enterFullscreen() {
   if (elem.requestFullscreen) elem.requestFullscreen();
 }
 
-/* 🎤 VOICE */
+/* 🎤 PERFECT SYNC VOICE */
 function speak(num) {
-  if (countdownSpoken.has(num)) return;
+  if (speaking) return;
+
+  speaking = true;
 
   let msg = new SpeechSynthesisUtterance(num.toString());
-  msg.volume = 1;
   msg.rate = 1;
   msg.pitch = 1;
+  msg.volume = 1;
 
+  msg.onend = () => {
+    speaking = false;
+  };
+
+  speechSynthesis.cancel(); // clear queue
   speechSynthesis.speak(msg);
-  countdownSpoken.add(num);
 }
 
-/* TIMER */
+/* TIMER DISPLAY */
 function updateDisplay() {
   let mins = Math.floor(seconds / 60);
   let secs = seconds % 60;
@@ -51,7 +60,7 @@ function updateDisplay() {
     particleSpeed = 2;
   }
 
-  // 💥 LAST 10 SEC (FULL DRAMA)
+  // 💥 LAST 10 SEC
   if (seconds >= totalSeconds - 10) {
     let remaining = totalSeconds - seconds;
 
@@ -60,13 +69,14 @@ function updateDisplay() {
 
     timer.classList.add("shake");
 
-    // 🎤 speak countdown
+    // 🎤 synced countdown
     if (remaining > 0) {
       speak(remaining);
     }
   }
 }
 
+/* TIMER LOOP */
 function startTimer() {
   interval = setInterval(() => {
     seconds++;
@@ -79,23 +89,34 @@ function startTimer() {
   }, 1000);
 }
 
-/* 🔊 END EFFECTS */
-function triggerEndEffects() {
+/* 🔊 FIXED BUZZER */
+function playBuzzer() {
   let sound = document.getElementById("buzzer");
 
+  sound.pause();            // reset properly
   sound.currentTime = 0;
   sound.volume = 1;
-  sound.loop = true; // 🔥 LOOP
-  sound.play().catch(() => {
-    console.log("Sound blocked");
-  });
+  sound.loop = true;
+
+  let promise = sound.play();
+
+  if (promise !== undefined) {
+    promise.catch(() => {
+      console.log("Sound blocked by browser");
+    });
+  }
+}
+
+/* 💥 FINAL EFFECT */
+function triggerEndEffects() {
+  playBuzzer();
 
   document.getElementById("timer").classList.add("shake");
 
   flashScreen();
 }
 
-/* 💥 FLASH */
+/* 🔴 FLASH */
 function flashScreen() {
   let count = 0;
 
