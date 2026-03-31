@@ -1,10 +1,12 @@
 let seconds = 0;
 let interval = null;
 
-const totalSeconds = 120; // 🔥 2 MIN TEST
+const totalSeconds = 120; // 🔥 test (change to 1200 later)
 
 let particleSpeed = 1;
 let particleColor = "orange";
+
+let countdownSpoken = new Set(); // prevent repeat voice
 
 function startApp() {
   document.getElementById("startScreen").classList.add("hidden");
@@ -18,6 +20,19 @@ function startApp() {
 function enterFullscreen() {
   let elem = document.documentElement;
   if (elem.requestFullscreen) elem.requestFullscreen();
+}
+
+/* 🎤 VOICE */
+function speak(num) {
+  if (countdownSpoken.has(num)) return;
+
+  let msg = new SpeechSynthesisUtterance(num.toString());
+  msg.volume = 1;
+  msg.rate = 1;
+  msg.pitch = 1;
+
+  speechSynthesis.speak(msg);
+  countdownSpoken.add(num);
 }
 
 /* TIMER */
@@ -36,11 +51,19 @@ function updateDisplay() {
     particleSpeed = 2;
   }
 
-  // 💥 LAST 10 SEC
+  // 💥 LAST 10 SEC (FULL DRAMA)
   if (seconds >= totalSeconds - 10) {
-    particleSpeed = 5;
+    let remaining = totalSeconds - seconds;
+
+    particleSpeed = 6;
     particleColor = "red";
+
     timer.classList.add("shake");
+
+    // 🎤 speak countdown
+    if (remaining > 0) {
+      speak(remaining);
+    }
   }
 }
 
@@ -51,33 +74,42 @@ function startTimer() {
 
     if (seconds >= totalSeconds) {
       clearInterval(interval);
-
-      // 🔊 BUZZER (FIXED)
-      let sound = document.getElementById("buzzer");
-      sound.currentTime = 0;
-      sound.volume = 1;
-      sound.play().catch(() => {
-        console.log("Sound blocked");
-      });
-
-      flashScreen();
+      triggerEndEffects();
     }
   }, 1000);
 }
 
-/* FLASH */
+/* 🔊 END EFFECTS */
+function triggerEndEffects() {
+  let sound = document.getElementById("buzzer");
+
+  sound.currentTime = 0;
+  sound.volume = 1;
+  sound.loop = true; // 🔥 LOOP
+  sound.play().catch(() => {
+    console.log("Sound blocked");
+  });
+
+  document.getElementById("timer").classList.add("shake");
+
+  flashScreen();
+}
+
+/* 💥 FLASH */
 function flashScreen() {
   let count = 0;
+
   let flash = setInterval(() => {
     document.body.style.background =
       count % 2 === 0 ? "red" : "black";
 
     count++;
-    if (count > 10) clearInterval(flash);
-  }, 150);
+
+    if (count > 14) clearInterval(flash);
+  }, 120);
 }
 
-/* PARTICLES */
+/* 🔥 PARTICLES */
 function startParticles() {
   const canvas = document.getElementById("particles");
   const ctx = canvas.getContext("2d");
@@ -87,7 +119,7 @@ function startParticles() {
 
   let particles = [];
 
-  for (let i = 0; i < 120; i++) {
+  for (let i = 0; i < 150; i++) {
     particles.push({
       x: Math.random() * canvas.width,
       y: canvas.height,
