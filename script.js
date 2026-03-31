@@ -1,12 +1,12 @@
 let seconds = 0;
 let interval = null;
 
-const totalSeconds = 120; // 🔥 test (change to 1200 later)
+const totalSeconds = 120; // change to 1200 later
 
 let particleSpeed = 1;
 let particleColor = "orange";
 
-let speaking = false;
+let lastSpokenSecond = null;
 
 /* START */
 function startApp() {
@@ -14,7 +14,16 @@ function startApp() {
   document.getElementById("timerScreen").classList.remove("hidden");
 
   enterFullscreen();
-  speechSynthesis.cancel(); // 🔥 clear any previous voice
+
+  // 🔊 AUDIO UNLOCK (CRITICAL FIX)
+  let sound = document.getElementById("buzzer");
+  sound.volume = 1;
+  sound.play().then(() => {
+    sound.pause();
+    sound.currentTime = 0;
+  }).catch(() => {});
+
+  speechSynthesis.cancel();
 
   startParticles();
   startTimer();
@@ -27,20 +36,12 @@ function enterFullscreen() {
 
 /* 🎤 PERFECT SYNC VOICE */
 function speak(num) {
-  if (speaking) return;
-
-  speaking = true;
-
   let msg = new SpeechSynthesisUtterance(num.toString());
   msg.rate = 1;
   msg.pitch = 1;
   msg.volume = 1;
 
-  msg.onend = () => {
-    speaking = false;
-  };
-
-  speechSynthesis.cancel(); // clear queue
+  speechSynthesis.cancel(); // remove queue
   speechSynthesis.speak(msg);
 }
 
@@ -60,7 +61,7 @@ function updateDisplay() {
     particleSpeed = 2;
   }
 
-  // 💥 LAST 10 SEC
+  // 💥 LAST 10 SEC (SYNC FIX)
   if (seconds >= totalSeconds - 10) {
     let remaining = totalSeconds - seconds;
 
@@ -69,9 +70,10 @@ function updateDisplay() {
 
     timer.classList.add("shake");
 
-    // 🎤 synced countdown
-    if (remaining > 0) {
+    // 🔥 SPEAK EXACTLY ONCE PER SECOND
+    if (remaining !== lastSpokenSecond && remaining > 0) {
       speak(remaining);
+      lastSpokenSecond = remaining;
     }
   }
 }
@@ -89,22 +91,18 @@ function startTimer() {
   }, 1000);
 }
 
-/* 🔊 FIXED BUZZER */
+/* 🔊 BUZZER (FIXED) */
 function playBuzzer() {
   let sound = document.getElementById("buzzer");
 
-  sound.pause();            // reset properly
+  sound.pause();
   sound.currentTime = 0;
   sound.volume = 1;
   sound.loop = true;
 
-  let promise = sound.play();
-
-  if (promise !== undefined) {
-    promise.catch(() => {
-      console.log("Sound blocked by browser");
-    });
-  }
+  sound.play().catch(() => {
+    console.log("Still blocked");
+  });
 }
 
 /* 💥 FINAL EFFECT */
