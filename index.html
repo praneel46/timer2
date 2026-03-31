@@ -9,18 +9,17 @@
 </head>
 <body>
 
-<!-- START SCREEN -->
 <div id="startScreen" class="start-screen">
   <button class="start-btn" onclick="startApp()">START</button>
 </div>
 
-<!-- TIMER SCREEN -->
 <div id="timerScreen" class="timer-screen hidden">
   <canvas id="particles"></canvas>
   <div id="timer">00:00</div>
 </div>
 
-<audio id="buzzer" src="buzzer.ogg"></audio>
+<!-- 🔊 AUDIO -->
+<audio id="buzzer" src="buzzer.mp3" preload="auto"></audio>
 
 <script src="script.js"></script>
 </body>
