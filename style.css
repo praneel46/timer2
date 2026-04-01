@@ -1,3 +1,4 @@
+/* ===== BASIC ===== */
 body {
   margin: 0;
   overflow: hidden;
@@ -5,7 +6,7 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
-/* START SCREEN */
+/* ===== START SCREEN ===== */
 .start-screen {
   height: 100vh;
   display: flex;
@@ -15,7 +16,7 @@ body {
   background: black;
 }
 
-/* 🔥 TITLE */
+/* ===== TITLE ===== */
 .title-container {
   position: absolute;
   top: 28%;
@@ -23,25 +24,41 @@ body {
   text-align: center;
 }
 
+/* 🔥 FIRE TITLE */
 .fire-title {
-  font-size: 8vw;
-  font-weight: 700;
+  font-size: 10vw;
+  font-weight: 900;
   color: #ff2a00;
-  letter-spacing: 12px;
+  letter-spacing: 15px;
 
   text-shadow:
     0 0 20px #ff3c00,
     0 0 60px #ff0000,
     0 0 120px #ff0000,
-    0 0 200px #ff0000;
+    0 0 200px #ff0000,
+    0 0 300px #ff0000;
 
   animation:
     titleEntry 1.5s ease,
-    fireFlicker 2s infinite,
-    hypeShake 3s infinite;
+    fireFlicker 1.5s infinite,
+    hypeShake 2s infinite;
 }
 
-/* 🎬 ENTRY */
+/* 🔥 FIRE AURA BACKGROUND */
+.title-container::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60vw;
+  height: 25vw;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(255,0,0,0.4), transparent);
+  filter: blur(60px);
+  z-index: -1;
+}
+
+/* ===== TITLE ANIMATIONS ===== */
 @keyframes titleEntry {
   0% {
     opacity: 0;
@@ -56,7 +73,6 @@ body {
   }
 }
 
-/* 🔥 FLICKER */
 @keyframes fireFlicker {
   0%, 100% {
     text-shadow:
@@ -70,15 +86,14 @@ body {
   }
 }
 
-/* ⚡ HYPE SHAKE */
 @keyframes hypeShake {
   0%, 100% { transform: translate(0,0); }
-  25% { transform: translate(1px,-1px); }
-  50% { transform: translate(-1px,1px); }
-  75% { transform: translate(1px,1px); }
+  25% { transform: translate(2px,-2px); }
+  50% { transform: translate(-2px,2px); }
+  75% { transform: translate(2px,2px); }
 }
 
-/* 🔥 START BUTTON */
+/* ===== START BUTTON ===== */
 .start-btn {
   font-size: 60px;
   padding: 25px 80px;
@@ -111,7 +126,7 @@ body {
   100% { transform: scale(1); }
 }
 
-/* TIMER SCREEN */
+/* ===== TIMER SCREEN ===== */
 .timer-screen {
   height: 100vh;
   width: 100vw;
@@ -121,14 +136,14 @@ body {
   align-items: center;
 }
 
-/* PARTICLES */
+/* ===== PARTICLES ===== */
 #particles {
   position: absolute;
   width: 100%;
   height: 100%;
 }
 
-/* PROGRESS BAR */
+/* ===== PROGRESS BAR ===== */
 #progressContainer {
   position: absolute;
   top: 0;
@@ -140,60 +155,87 @@ body {
 #progressBar {
   height: 100%;
   width: 0%;
-  background: orange;
+  background: linear-gradient(to right, orange, red);
+  box-shadow: 0 0 10px red;
   transition: width 0.5s linear;
 }
 
-/* TIMER */
+/* ===== TIMER ===== */
 #timer {
   font-size: 28vw;
   color: white;
+  z-index: 2;
 }
 
-/* 🔥 INTRO TEXT */
+/* ===== INTRO TEXT (3 2 1 GO) ===== */
 .intro-fire {
   position: absolute;
-  font-size: 18vw;
-  font-weight: bold;
-  color: #ff2a00;
+  font-size: 22vw;
+  font-weight: 900;
+  color: #ff1a00;
+  z-index: 3;
 
   text-shadow:
-    0 0 20px #ff3c00,
-    0 0 60px #ff0000,
-    0 0 120px #ff0000;
+    0 0 30px #ff3c00,
+    0 0 80px #ff0000,
+    0 0 150px #ff0000,
+    0 0 250px #ff0000;
 
   opacity: 0;
 }
 
+/* 🔥 POP EFFECT */
 .fire-show {
-  animation: firePop 0.9s ease forwards;
+  animation: firePop 0.8s ease forwards;
 }
 
 @keyframes firePop {
-  0% { opacity: 0; transform: scale(0.5); }
-  40% { opacity: 1; transform: scale(1.3); }
-  100% { opacity: 0; transform: scale(1); }
+  0% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.6);
+  }
+  70% {
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
 }
 
-/* WARNING */
+/* ===== WARNING ===== */
 .warning {
   color: red;
 }
 
-/* SHAKE */
+/* ===== SHAKE ===== */
 .shake {
   animation: shake 0.05s infinite;
 }
 
 @keyframes shake {
   0% { transform: translate(0,0); }
-  25% { transform: translate(5px,-5px); }
-  50% { transform: translate(-5px,5px); }
-  75% { transform: translate(5px,5px); }
-  100% { transform: translate(-5px,-5px); }
+  25% { transform: translate(6px,-6px); }
+  50% { transform: translate(-6px,6px); }
+  75% { transform: translate(6px,6px); }
+  100% { transform: translate(-6px,-6px); }
 }
 
-/* HIDE */
+/* ===== 💣 SCREEN BLAST ===== */
+.blast {
+  animation: blastFlash 0.4s ease;
+}
+
+@keyframes blastFlash {
+  0% { background: white; }
+  100% { background: black; }
+}
+
+/* ===== HIDE ===== */
 .hidden {
   display: none;
 }
