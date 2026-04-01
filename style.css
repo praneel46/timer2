@@ -13,14 +13,11 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background: black;
+  gap: 50px; /* spacing between title & button */
 }
 
-/* ===== TITLE ===== */
+/* ===== TITLE CONTAINER ===== */
 .title-container {
-  position: absolute;
-  top: 28%;
-  width: 100%;
   text-align: center;
 }
 
@@ -29,7 +26,8 @@ body {
   font-size: 10vw;
   font-weight: 900;
   color: #ff2a00;
-  letter-spacing: 15px;
+  letter-spacing: 12px;
+  margin: 0;
 
   text-shadow:
     0 0 20px #ff3c00,
@@ -44,14 +42,14 @@ body {
     hypeShake 2s infinite;
 }
 
-/* 🔥 FIRE AURA BACKGROUND */
+/* 🔥 FIRE AURA */
 .title-container::before {
   content: "";
   position: absolute;
-  top: 50%;
+  top: 35%;
   left: 50%;
   width: 60vw;
-  height: 25vw;
+  height: 20vw;
   transform: translate(-50%, -50%);
   background: radial-gradient(circle, rgba(255,0,0,0.4), transparent);
   filter: blur(60px);
@@ -167,7 +165,7 @@ body {
   z-index: 2;
 }
 
-/* ===== INTRO TEXT (3 2 1 GO) ===== */
+/* ===== INTRO TEXT ===== */
 .intro-fire {
   position: absolute;
   font-size: 22vw;
@@ -184,32 +182,15 @@ body {
   opacity: 0;
 }
 
-/* 🔥 POP EFFECT */
 .fire-show {
   animation: firePop 0.8s ease forwards;
 }
 
 @keyframes firePop {
-  0% {
-    opacity: 0;
-    transform: scale(0.4);
-  }
-  40% {
-    opacity: 1;
-    transform: scale(1.6);
-  }
-  70% {
-    transform: scale(1.2);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(1);
-  }
-}
-
-/* ===== WARNING ===== */
-.warning {
-  color: red;
+  0% { opacity: 0; transform: scale(0.4); }
+  40% { opacity: 1; transform: scale(1.6); }
+  70% { transform: scale(1.2); }
+  100% { opacity: 0; transform: scale(1); }
 }
 
 /* ===== SHAKE ===== */
@@ -225,7 +206,7 @@ body {
   100% { transform: translate(-6px,-6px); }
 }
 
-/* ===== 💣 SCREEN BLAST ===== */
+/* ===== BLAST ===== */
 .blast {
   animation: blastFlash 0.4s ease;
 }
