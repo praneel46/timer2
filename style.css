@@ -2,96 +2,8 @@
 body {
   margin: 0;
   overflow: hidden;
-  font-family: 'Inter', sans-serif;
   background: black;
-  position: relative;
-}
-
-/* 🔥 INSANE BACKGROUND */
-
-/* LAYER 1 - FIRE GLOW */
-body::before {
-  content: "";
-  position: absolute;
-  width: 200%;
-  height: 200%;
-  top: -50%;
-  left: -50%;
-
-  background: radial-gradient(circle at center, rgba(255,40,0,0.25), transparent 60%);
-  animation: fireMove 6s linear infinite;
-
-  z-index: 0;
-}
-
-/* LAYER 2 - RED CORE PULSE */
-body::after {
-  content: "";
-  position: absolute;
-  width: 150%;
-  height: 150%;
-  top: -25%;
-  left: -25%;
-
-  background: radial-gradient(circle, rgba(255,0,0,0.2), transparent 70%);
-  animation: firePulse 3s ease-in-out infinite;
-
-  z-index: 0;
-}
-
-/* 🌊 HEAT WAVE */
-.timer-screen::before {
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 100%;
-
-  background: radial-gradient(circle at bottom, rgba(255,100,0,0.15), transparent 70%);
-  animation: heatWave 4s ease-in-out infinite;
-
-  z-index: 0;
-}
-
-/* ✨ EMBERS */
-.timer-screen::after {
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 100%;
-
-  background-image:
-    radial-gradient(circle, rgba(255,80,0,0.8) 2px, transparent 2px),
-    radial-gradient(circle, rgba(255,120,0,0.6) 1px, transparent 1px);
-
-  background-size: 200px 200px, 150px 150px;
-  animation: embersMove 10s linear infinite;
-
-  opacity: 0.3;
-  z-index: 0;
-}
-
-/* 🔥 BACKGROUND ANIMATIONS */
-@keyframes fireMove {
-  0% { transform: translate(0,0); }
-  50% { transform: translate(5%, 5%); }
-  100% { transform: translate(0,0); }
-}
-
-@keyframes firePulse {
-  0% { opacity: 0.2; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(1.2); }
-  100% { opacity: 0.2; transform: scale(1); }
-}
-
-@keyframes heatWave {
-  0% { transform: scaleY(1); opacity: 0.2; }
-  50% { transform: scaleY(1.1); opacity: 0.4; }
-  100% { transform: scaleY(1); opacity: 0.2; }
-}
-
-@keyframes embersMove {
-  0% { background-position: 0 0, 0 0; }
-  100% { background-position: 0 -500px, 0 -300px; }
+  font-family: 'Inter', sans-serif;
 }
 
 /* ===== START SCREEN ===== */
@@ -103,7 +15,6 @@ body::after {
   flex-direction: column;
   gap: 50px;
   position: relative;
-  z-index: 1;
 }
 
 /* ===== TITLE CONTAINER ===== */
@@ -111,6 +22,8 @@ body::after {
   text-align: center;
   position: relative;
 }
+
+/* ❌ REMOVED BROKEN ::before (was causing overlap) */
 
 /* 🔥 FIRE TITLE */
 .fire-title {
@@ -243,7 +156,6 @@ body::after {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1;
 }
 
 /* ===== PARTICLES ===== */
