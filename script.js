@@ -1,7 +1,7 @@
 let seconds = 0;
 let interval = null;
 
-const totalSeconds = 1200; // 20 min
+const totalSeconds = 1200;
 
 let particleSpeed = 1;
 let particleColor = "orange";
@@ -26,12 +26,39 @@ function startApp() {
   speechSynthesis.cancel();
 
   startParticles();
-  startTimer();
+
+  // 🎬 CINEMATIC INTRO
+  showIntro();
 }
 
 function enterFullscreen() {
   let elem = document.documentElement;
   if (elem.requestFullscreen) elem.requestFullscreen();
+}
+
+/* 🎬 INTRO */
+function showIntro() {
+  let timer = document.getElementById("timer");
+
+  timer.classList.add("intro-text");
+
+  timer.innerText = "READY";
+
+  setTimeout(() => {
+    timer.innerText = "SET";
+    timer.classList.add("show");
+  }, 1000);
+
+  setTimeout(() => {
+    timer.innerText = "GO";
+    timer.classList.add("show");
+  }, 2000);
+
+  setTimeout(() => {
+    timer.classList.remove("intro-text", "show");
+    timer.innerText = "00:00";
+    startTimer();
+  }, 3000);
 }
 
 /* 🎤 VOICE */
@@ -65,7 +92,7 @@ function updateDisplay() {
   if (seconds >= totalSeconds - 10) {
     let remaining = totalSeconds - seconds;
 
-    particleSpeed = 7; // 🔥 stronger fire
+    particleSpeed = 7;
     particleColor = "red";
 
     timer.classList.add("shake");
@@ -104,13 +131,17 @@ function playBuzzer() {
   });
 }
 
-/* 💥 END EFFECT */
+/* 💣 END EFFECT */
 function triggerEndEffects() {
+  let timer = document.getElementById("timer");
+
+  timer.classList.add("explode"); // 💣 explosion
+
   playBuzzer();
 
-  document.getElementById("timer").classList.add("shake");
-
-  flashScreen();
+  setTimeout(() => {
+    flashScreen();
+  }, 300);
 }
 
 /* 🔴 FLASH */
@@ -127,7 +158,7 @@ function flashScreen() {
   }, 120);
 }
 
-/* 🔥 PARTICLES (UPGRADED FIRE LOOK) */
+/* 🔥 PARTICLES */
 function startParticles() {
   const canvas = document.getElementById("particles");
   const ctx = canvas.getContext("2d");
@@ -150,7 +181,6 @@ function startParticles() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     particles.forEach(p => {
-      // 🔥 better fire color
       ctx.fillStyle =
         particleColor === "red"
           ? "rgba(255,50,0,0.9)"
@@ -161,8 +191,6 @@ function startParticles() {
       ctx.fill();
 
       p.y -= p.speed * particleSpeed;
-
-      // slight horizontal movement (natural fire)
       p.x += (Math.random() - 0.5) * 1.5;
 
       if (p.y < 0) {
