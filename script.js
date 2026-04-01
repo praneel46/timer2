@@ -37,7 +37,7 @@ function playIntroVoice() {
 
   setTimeout(() => {
     let msg = new SpeechSynthesisUtterance(
-      "Ladies and gentlemen... fasten your seatbelts... the quiz begins now!"
+      "Ladies and gentlemen... fasten your seatbelts... the event begins now!"
     );
 
     msg.rate = 0.9;
