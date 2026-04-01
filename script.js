@@ -1,7 +1,7 @@
 let seconds = 0;
 let interval = null;
 
-const totalSeconds = 120; // change to 1200 later
+const totalSeconds = 1200; // 20 min
 
 let particleSpeed = 1;
 let particleColor = "orange";
@@ -15,7 +15,7 @@ function startApp() {
 
   enterFullscreen();
 
-  // 🔊 AUDIO UNLOCK (CRITICAL FIX)
+  // 🔊 AUDIO UNLOCK
   let sound = document.getElementById("buzzer");
   sound.volume = 1;
   sound.play().then(() => {
@@ -34,14 +34,14 @@ function enterFullscreen() {
   if (elem.requestFullscreen) elem.requestFullscreen();
 }
 
-/* 🎤 PERFECT SYNC VOICE */
+/* 🎤 VOICE */
 function speak(num) {
   let msg = new SpeechSynthesisUtterance(num.toString());
   msg.rate = 1;
   msg.pitch = 1;
   msg.volume = 1;
 
-  speechSynthesis.cancel(); // remove queue
+  speechSynthesis.cancel();
   speechSynthesis.speak(msg);
 }
 
@@ -61,16 +61,15 @@ function updateDisplay() {
     particleSpeed = 2;
   }
 
-  // 💥 LAST 10 SEC (SYNC FIX)
+  // 💥 LAST 10 SEC
   if (seconds >= totalSeconds - 10) {
     let remaining = totalSeconds - seconds;
 
-    particleSpeed = 6;
+    particleSpeed = 7; // 🔥 stronger fire
     particleColor = "red";
 
     timer.classList.add("shake");
 
-    // 🔥 SPEAK EXACTLY ONCE PER SECOND
     if (remaining !== lastSpokenSecond && remaining > 0) {
       speak(remaining);
       lastSpokenSecond = remaining;
@@ -91,7 +90,7 @@ function startTimer() {
   }, 1000);
 }
 
-/* 🔊 BUZZER (FIXED) */
+/* 🔊 BUZZER */
 function playBuzzer() {
   let sound = document.getElementById("buzzer");
 
@@ -101,11 +100,11 @@ function playBuzzer() {
   sound.loop = true;
 
   sound.play().catch(() => {
-    console.log("Still blocked");
+    console.log("Sound blocked");
   });
 }
 
-/* 💥 FINAL EFFECT */
+/* 💥 END EFFECT */
 function triggerEndEffects() {
   playBuzzer();
 
@@ -128,7 +127,7 @@ function flashScreen() {
   }, 120);
 }
 
-/* 🔥 PARTICLES */
+/* 🔥 PARTICLES (UPGRADED FIRE LOOK) */
 function startParticles() {
   const canvas = document.getElementById("particles");
   const ctx = canvas.getContext("2d");
@@ -138,11 +137,11 @@ function startParticles() {
 
   let particles = [];
 
-  for (let i = 0; i < 150; i++) {
+  for (let i = 0; i < 180; i++) {
     particles.push({
       x: Math.random() * canvas.width,
       y: canvas.height,
-      size: Math.random() * 4,
+      size: Math.random() * 3 + 1,
       speed: Math.random() * 2 + 1
     });
   }
@@ -151,12 +150,20 @@ function startParticles() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     particles.forEach(p => {
-      ctx.fillStyle = particleColor;
+      // 🔥 better fire color
+      ctx.fillStyle =
+        particleColor === "red"
+          ? "rgba(255,50,0,0.9)"
+          : "rgba(255,140,0,0.7)";
+
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
       ctx.fill();
 
       p.y -= p.speed * particleSpeed;
+
+      // slight horizontal movement (natural fire)
+      p.x += (Math.random() - 0.5) * 1.5;
 
       if (p.y < 0) {
         p.y = canvas.height;
