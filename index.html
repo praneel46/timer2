@@ -9,13 +9,28 @@
 </head>
 <body>
 
+<!-- START SCREEN -->
 <div id="startScreen" class="start-screen">
   <button class="start-btn" onclick="startApp()">START</button>
 </div>
 
+<!-- TIMER SCREEN -->
 <div id="timerScreen" class="timer-screen hidden">
+  
+  <!-- 🔥 FIRE PARTICLES -->
   <canvas id="particles"></canvas>
+
+  <!-- 📊 PROGRESS BAR -->
+  <div id="progressContainer">
+    <div id="progressBar"></div>
+  </div>
+
+  <!-- 🎬 INTRO TEXT (3 2 1 GO) -->
+  <div id="introText" class="intro-text"></div>
+
+  <!-- ⏱ TIMER -->
   <div id="timer">00:00</div>
+
 </div>
 
 <!-- 🔊 AUDIO -->
