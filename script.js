@@ -28,21 +28,30 @@ function startApp() {
 
   startParticles();
 
-  playIntroVoice();
+  playIntroVoice(); // 🎤 fixed flow
 }
 
-/* ================= INTRO VOICE ================= */
+/* ================= INTRO VOICE (FIXED) ================= */
 function playIntroVoice() {
-  let msg = new SpeechSynthesisUtterance(
-    "Ladies and gentlemen... fasten your seatbelts... the quiz begins now!"
-  );
-  msg.rate = 0.9;
-
-  speechSynthesis.speak(msg);
+  speechSynthesis.cancel();
 
   setTimeout(() => {
-    showIntro();
-  }, 2500);
+    let msg = new SpeechSynthesisUtterance(
+      "Ladies and gentlemen... fasten your seatbelts... the quiz begins now!"
+    );
+
+    msg.rate = 0.9;
+    msg.pitch = 1;
+    msg.volume = 1;
+
+    speechSynthesis.speak(msg);
+
+    // ✅ PERFECT SYNC (no timeout guessing)
+    msg.onend = () => {
+      showIntro();
+    };
+
+  }, 300); // small delay fixes browser block
 }
 
 /* ================= FULLSCREEN ================= */
@@ -61,7 +70,6 @@ function showIntro() {
   let intervalIntro = setInterval(() => {
     intro.innerText = steps[i];
 
-    // 🔥 restart animation properly
     intro.classList.remove("fire-show");
     void intro.offsetWidth;
     intro.classList.add("fire-show");
@@ -180,7 +188,9 @@ function playBuzzer() {
   sound.volume = 1;
   sound.loop = true;
 
-  sound.play();
+  sound.play().catch(() => {
+    console.log("Buzzer blocked");
+  });
 }
 
 /* ================= END EFFECT ================= */
