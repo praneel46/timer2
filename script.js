@@ -7,6 +7,7 @@ let particleSpeed = 1;
 let particleColor = "orange";
 
 let lastSpokenSecond = null;
+let last5minAnnounced = false;
 
 /* START */
 function startApp() {
@@ -27,8 +28,21 @@ function startApp() {
 
   startParticles();
 
-  // 🎬 CINEMATIC INTRO
-  showIntro();
+  playIntroVoice(); // 🎤 intro voice
+}
+
+/* 🎤 INTRO VOICE */
+function playIntroVoice() {
+  let msg = new SpeechSynthesisUtterance(
+    "Ladies and gentlemen... fasten your seatbelts... the quiz begins now!"
+  );
+  msg.rate = 0.9;
+
+  speechSynthesis.speak(msg);
+
+  setTimeout(() => {
+    showIntro();
+  }, 2500);
 }
 
 function enterFullscreen() {
@@ -36,37 +50,33 @@ function enterFullscreen() {
   if (elem.requestFullscreen) elem.requestFullscreen();
 }
 
-/* 🎬 INTRO */
+/* 🎬 INTRO 3 2 1 GO */
 function showIntro() {
-  let timer = document.getElementById("timer");
+  let intro = document.getElementById("introText");
 
-  timer.classList.add("intro-text");
+  let steps = ["3", "2", "1", "GO"];
+  let i = 0;
 
-  timer.innerText = "READY";
+  let intervalIntro = setInterval(() => {
+    intro.innerText = steps[i];
+    intro.classList.add("show");
 
-  setTimeout(() => {
-    timer.innerText = "SET";
-    timer.classList.add("show");
+    setTimeout(() => intro.classList.remove("show"), 700);
+
+    i++;
+
+    if (i >= steps.length) {
+      clearInterval(intervalIntro);
+      intro.innerText = "";
+      startTimer();
+    }
   }, 1000);
-
-  setTimeout(() => {
-    timer.innerText = "GO";
-    timer.classList.add("show");
-  }, 2000);
-
-  setTimeout(() => {
-    timer.classList.remove("intro-text", "show");
-    timer.innerText = "00:00";
-    startTimer();
-  }, 3000);
 }
 
 /* 🎤 VOICE */
-function speak(num) {
-  let msg = new SpeechSynthesisUtterance(num.toString());
+function speak(text) {
+  let msg = new SpeechSynthesisUtterance(text);
   msg.rate = 1;
-  msg.pitch = 1;
-  msg.volume = 1;
 
   speechSynthesis.cancel();
   speechSynthesis.speak(msg);
@@ -82,25 +92,54 @@ function updateDisplay() {
   timer.innerText =
     `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
 
-  // ⚠️ LAST 1 MIN
+  updateProgressBar();
+
+  // 🔊 LAST 5 MIN ANNOUNCEMENT (15:00)
+  if (seconds === totalSeconds - 300 && !last5minAnnounced) {
+    speak("Last 5 minutes remaining");
+    last5minAnnounced = true;
+  }
+
+  // 🎨 COLOR TRANSITIONS
+  if (seconds >= totalSeconds - 300) {
+    particleColor = "darkred";
+  }
+
+  if (seconds >= totalSeconds - 120) {
+    particleSpeed = 3;
+  }
+
   if (seconds >= totalSeconds - 60) {
     timer.classList.add("warning");
-    particleSpeed = 2;
+    particleColor = "red";
+    particleSpeed = 6;
+    timer.classList.add("shake");
   }
 
   // 💥 LAST 10 SEC
   if (seconds >= totalSeconds - 10) {
     let remaining = totalSeconds - seconds;
 
-    particleSpeed = 7;
-    particleColor = "red";
-
-    timer.classList.add("shake");
-
     if (remaining !== lastSpokenSecond && remaining > 0) {
-      speak(remaining);
+      speak(remaining.toString());
       lastSpokenSecond = remaining;
     }
+  }
+}
+
+/* 📊 PROGRESS BAR */
+function updateProgressBar() {
+  let progress = (seconds / totalSeconds) * 100;
+  let bar = document.getElementById("progressBar");
+
+  bar.style.width = progress + "%";
+
+  if (seconds >= totalSeconds - 300) {
+    bar.style.background = "darkred";
+  }
+
+  if (seconds >= totalSeconds - 60) {
+    bar.style.background = "red";
   }
 }
 
@@ -126,22 +165,17 @@ function playBuzzer() {
   sound.volume = 1;
   sound.loop = true;
 
-  sound.play().catch(() => {
-    console.log("Sound blocked");
-  });
+  sound.play();
 }
 
 /* 💣 END EFFECT */
 function triggerEndEffects() {
   let timer = document.getElementById("timer");
 
-  timer.classList.add("explode"); // 💣 explosion
-
+  timer.classList.add("shake"); // keep shaking
   playBuzzer();
 
-  setTimeout(() => {
-    flashScreen();
-  }, 300);
+  flashScreen();
 }
 
 /* 🔴 FLASH */
@@ -168,7 +202,7 @@ function startParticles() {
 
   let particles = [];
 
-  for (let i = 0; i < 180; i++) {
+  for (let i = 0; i < 200; i++) {
     particles.push({
       x: Math.random() * canvas.width,
       y: canvas.height,
@@ -184,6 +218,8 @@ function startParticles() {
       ctx.fillStyle =
         particleColor === "red"
           ? "rgba(255,50,0,0.9)"
+          : particleColor === "darkred"
+          ? "rgba(180,0,0,0.8)"
           : "rgba(255,140,0,0.7)";
 
       ctx.beginPath();
