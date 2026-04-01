@@ -13,13 +13,17 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  gap: 50px; /* spacing between title & button */
+  gap: 50px;
+  position: relative;
 }
 
 /* ===== TITLE CONTAINER ===== */
 .title-container {
   text-align: center;
+  position: relative;
 }
+
+/* ❌ REMOVED BROKEN ::before (was causing overlap) */
 
 /* 🔥 FIRE TITLE */
 .fire-title {
@@ -33,27 +37,25 @@ body {
     0 0 20px #ff3c00,
     0 0 60px #ff0000,
     0 0 120px #ff0000,
-    0 0 200px #ff0000,
-    0 0 300px #ff0000;
+    0 0 200px #ff0000;
 
   animation:
     titleEntry 1.5s ease,
     fireFlicker 1.5s infinite,
     hypeShake 2s infinite;
+
+  transition: all 0.8s ease;
 }
 
-/* 🔥 FIRE AURA */
-.title-container::before {
-  content: "";
-  position: absolute;
-  top: 35%;
-  left: 50%;
-  width: 60vw;
-  height: 20vw;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(circle, rgba(255,0,0,0.4), transparent);
-  filter: blur(60px);
-  z-index: -1;
+/* 🎬 SPLIT EFFECT */
+.split-left {
+  transform: translateX(-120vw) rotate(-10deg);
+  opacity: 0;
+}
+
+.split-right {
+  transform: translateX(120vw) rotate(10deg);
+  opacity: 0;
 }
 
 /* ===== TITLE ANIMATIONS ===== */
@@ -124,6 +126,28 @@ body {
   100% { transform: scale(1); }
 }
 
+/* ===== 💥 FIRE BURST ===== */
+.burst {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(255,80,0,0.8), transparent);
+  border-radius: 50%;
+  animation: burstAnim 0.6s ease forwards;
+  pointer-events: none;
+}
+
+@keyframes burstAnim {
+  0% {
+    transform: scale(0.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(6);
+    opacity: 0;
+  }
+}
+
 /* ===== TIMER SCREEN ===== */
 .timer-screen {
   height: 100vh;
@@ -176,8 +200,7 @@ body {
   text-shadow:
     0 0 30px #ff3c00,
     0 0 80px #ff0000,
-    0 0 150px #ff0000,
-    0 0 250px #ff0000;
+    0 0 150px #ff0000;
 
   opacity: 0;
 }
