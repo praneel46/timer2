@@ -9,7 +9,7 @@ let particleColor = "orange";
 let lastSpokenSecond = null;
 let last5minAnnounced = false;
 
-/* START */
+/* ================= START ================= */
 function startApp() {
   document.getElementById("startScreen").classList.add("hidden");
   document.getElementById("timerScreen").classList.remove("hidden");
@@ -28,10 +28,10 @@ function startApp() {
 
   startParticles();
 
-  playIntroVoice(); // 🎤 intro voice
+  playIntroVoice();
 }
 
-/* 🎤 INTRO VOICE */
+/* ================= INTRO VOICE ================= */
 function playIntroVoice() {
   let msg = new SpeechSynthesisUtterance(
     "Ladies and gentlemen... fasten your seatbelts... the quiz begins now!"
@@ -45,12 +45,13 @@ function playIntroVoice() {
   }, 2500);
 }
 
+/* ================= FULLSCREEN ================= */
 function enterFullscreen() {
   let elem = document.documentElement;
   if (elem.requestFullscreen) elem.requestFullscreen();
 }
 
-/* 🎬 INTRO 3 2 1 GO */
+/* ================= INTRO 3 2 1 GO ================= */
 function showIntro() {
   let intro = document.getElementById("introText");
 
@@ -59,21 +60,35 @@ function showIntro() {
 
   let intervalIntro = setInterval(() => {
     intro.innerText = steps[i];
-    intro.classList.add("show");
 
-    setTimeout(() => intro.classList.remove("show"), 700);
+    // 🔥 restart animation properly
+    intro.classList.remove("fire-show");
+    void intro.offsetWidth;
+    intro.classList.add("fire-show");
+
+    // 💣 SCREEN BLAST at GO
+    if (steps[i] === "GO") {
+      document.body.classList.add("blast");
+
+      setTimeout(() => {
+        document.body.classList.remove("blast");
+      }, 300);
+    }
 
     i++;
 
     if (i >= steps.length) {
       clearInterval(intervalIntro);
-      intro.innerText = "";
-      startTimer();
+
+      setTimeout(() => {
+        intro.innerText = "";
+        startTimer();
+      }, 700);
     }
   }, 1000);
 }
 
-/* 🎤 VOICE */
+/* ================= VOICE ================= */
 function speak(text) {
   let msg = new SpeechSynthesisUtterance(text);
   msg.rate = 1;
@@ -82,7 +97,7 @@ function speak(text) {
   speechSynthesis.speak(msg);
 }
 
-/* TIMER DISPLAY */
+/* ================= TIMER DISPLAY ================= */
 function updateDisplay() {
   let mins = Math.floor(seconds / 60);
   let secs = seconds % 60;
@@ -94,7 +109,7 @@ function updateDisplay() {
 
   updateProgressBar();
 
-  // 🔊 LAST 5 MIN ANNOUNCEMENT (15:00)
+  // 🔊 LAST 5 MIN ANNOUNCEMENT
   if (seconds === totalSeconds - 300 && !last5minAnnounced) {
     speak("Last 5 minutes remaining");
     last5minAnnounced = true;
@@ -116,7 +131,7 @@ function updateDisplay() {
     timer.classList.add("shake");
   }
 
-  // 💥 LAST 10 SEC
+  // 💥 LAST 10 SEC COUNTDOWN
   if (seconds >= totalSeconds - 10) {
     let remaining = totalSeconds - seconds;
 
@@ -127,7 +142,7 @@ function updateDisplay() {
   }
 }
 
-/* 📊 PROGRESS BAR */
+/* ================= PROGRESS BAR ================= */
 function updateProgressBar() {
   let progress = (seconds / totalSeconds) * 100;
   let bar = document.getElementById("progressBar");
@@ -143,7 +158,7 @@ function updateProgressBar() {
   }
 }
 
-/* TIMER LOOP */
+/* ================= TIMER LOOP ================= */
 function startTimer() {
   interval = setInterval(() => {
     seconds++;
@@ -156,7 +171,7 @@ function startTimer() {
   }, 1000);
 }
 
-/* 🔊 BUZZER */
+/* ================= BUZZER ================= */
 function playBuzzer() {
   let sound = document.getElementById("buzzer");
 
@@ -168,17 +183,17 @@ function playBuzzer() {
   sound.play();
 }
 
-/* 💣 END EFFECT */
+/* ================= END EFFECT ================= */
 function triggerEndEffects() {
   let timer = document.getElementById("timer");
 
-  timer.classList.add("shake"); // keep shaking
+  timer.classList.add("shake");
   playBuzzer();
 
   flashScreen();
 }
 
-/* 🔴 FLASH */
+/* ================= FLASH ================= */
 function flashScreen() {
   let count = 0;
 
@@ -192,7 +207,7 @@ function flashScreen() {
   }, 120);
 }
 
-/* 🔥 PARTICLES */
+/* ================= PARTICLES ================= */
 function startParticles() {
   const canvas = document.getElementById("particles");
   const ctx = canvas.getContext("2d");
